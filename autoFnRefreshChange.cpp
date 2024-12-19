@@ -5,6 +5,8 @@
 
 using namespace std;
 
+// TODO: Add ability to switch between two modes: 1. Legion Fn+R Refresh Active Mode Fix, and 2. Custom Hotkey Mode (for non Legion laptops)
+
 UINT32 numPathArrayElements = 0, numModeInfoArrayElements = 0;
 UINT32 filter = QDC_ONLY_ACTIVE_PATHS;
 
