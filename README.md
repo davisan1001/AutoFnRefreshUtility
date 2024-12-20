@@ -24,7 +24,7 @@ This application **will be** extended to include a mode to configure your own re
 
 ### Executing
 
-- **... TODO: Include instructions to setup this program to turn in the background**
+- **... TODO: Include instructions to setup this program to run in the background**
 
 
 ## For the Developer
