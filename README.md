@@ -8,7 +8,7 @@ It supports two modes:
 #### Lenovo Fn+R Refresh Fix
 The application was built with the intent to fix the Lenovo Legion Fn+R hotkey:  
   -  **The Problem:** The Legion Fn+R hotkey would successfully change the monitor refresh rate from 60 to 165Hz and back, BUT when going from 165 to 60Hz the active signal mode would remain at 165Hz. This would not allow for the benefits of battery life to be gained.  
-  -  **The Fix:** This program detects an Fn+R key press and fixes the active signal mode to reflect the monitor update.  
+  -  **The Fix:** This program detects a display change (often as a result of an Fn+R key press) and fixes the active signal mode to reflect the monitor update.  
 
 #### Custom Hotkey Refresh Change
 The application has been extended to include a mode to configure your own refresh change hotkey (for non-Lenovo Legion laptops or those that do not support the Fn+R hotkey).  
