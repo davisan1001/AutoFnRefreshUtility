@@ -146,8 +146,8 @@ int lenovoFnFixDisplayUpdate() {
         return -1;
     }
 
-    if (getDisplayConfigRefresh() == 60) {
-        setDisplayConfigRefresh(60);
+    if (getDisplayConfigRefresh() == REFRESH_RATE_1) {
+        setDisplayConfigRefresh(REFRESH_RATE_1);
     }
 
     return 0;
