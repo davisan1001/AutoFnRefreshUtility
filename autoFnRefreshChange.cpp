@@ -236,12 +236,28 @@ int initWindow() {
         return -1;
     }
 
+    if (IsWindowVisible(hWnd) != 0) {
+        cerr << "The \"Invisible\" Window is Visible... Aborting" << endl;
+        return -1;
+    }
+
     return 0;
 }
 
 int main() {
     LONG result = 0;
-    // Initialize the window();
+
+    // Hide the Console Window Immediately
+    HWND hConsoleWnd = GetConsoleWindow();
+    ShowWindow(hConsoleWnd, SW_HIDE);
+
+    // Check if Console Window is Still Visible
+    if (IsWindowVisible(hConsoleWnd) != 0) {
+        cerr << "The Console Window is Still Visible... Aborting" << endl;
+        return -1;
+    }
+
+    // Initialize the Invisible Window();
     result = initWindow();
 
     if (result != 0) {
