@@ -12,7 +12,11 @@ The application was built with the intent to fix the Lenovo Legion Fn+R hotkey:
 
 #### Custom Hotkey Refresh Change
 The application has been extended to include a mode to configure your own refresh change hotkey (for non-Lenovo Legion laptops or those that do not support the Fn+R hotkey).  
-The hotkey can be configured using the global variables at the top of the program. Custom variables are marked with the `// USER: ...` comment. 
+The hotkey can be configured using the global variables at the top of the program. Custom variables are marked with the `// USER: ...` comment.  
+
+The default hotkey is Windows + ctrl + R.  
+The default refresh rates to switch between are 60Hz and 165Hz.  
+These values can be changed.
 
 ## Getting Started
 
