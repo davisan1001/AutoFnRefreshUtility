@@ -31,13 +31,13 @@ These values can be changed.
 - Clone the repository to your local machine.
 - Compile the autoFnRefreshChange.cpp file using your favorite C++ compiler for windows.
   - If using cl.exe, run: `cl.exe /EHsc /nologo /Fe.\autoFnRefreshChange.exe autoFnRefreshChange.cpp user32.lib`
-- **... TODO: Add complete instructions for installing**
 
 ### Executing
 
 Once you obtain the executable for this program, you have two options to run the program on startup.
 1. Create a shortcut to the .exe and place the shortcut in: `C:\Users\<user>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\`
-2. Place the .exe in the `C:\Users\<user>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\` folder directly. **NOTE: This can cause Windows Defender to view the program as malware**.    
+2. Place the .exe in the `C:\Users\<user>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\` folder directly.
+   **NOTE: This can cause Windows Defender to view the program as malware**.    
 
 
 ## For the Developer
