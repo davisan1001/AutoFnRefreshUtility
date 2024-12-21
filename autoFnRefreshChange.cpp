@@ -1,5 +1,7 @@
 #define UNICODE
 
+//#define _WIN32_WINNT 0x0500
+
 #include <Windows.h>
 #include <iostream>
 #include <vector>
@@ -247,6 +249,10 @@ int initWindow() {
 int main() {
     LONG result = 0;
 
+    // TODO: This doesn't work...
+    //      Only option might be to change the program to be a window application instead of a console application.
+    // TODO: Change this application to be a window application!
+    
     // Hide the Console Window Immediately
     HWND hConsoleWnd = GetConsoleWindow();
     ShowWindow(hConsoleWnd, SW_HIDE);
