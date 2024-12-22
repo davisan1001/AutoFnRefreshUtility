@@ -11,6 +11,9 @@
 
 using namespace std;
 
+
+/* ~~~ VARIABLES ~~~ */
+
 enum MODE_TYPE {
   LENOVO_FN_REFRESH_FIX,
   CUSTOM_HOTKEY_MODE
@@ -39,7 +42,17 @@ int targetIx;
 //  This value may or may not be needed depending on how your computer reacts to
 //  the display update change. If you notice strange behaviour, try adding some delay.
 //  Default is 0;
-int displayRefreshSleep = 0;                // USER: Modify these for your own setup
+int displayRefreshSleep = 0;    // USER: Modify these for your own setup
+
+// Keep track of the refresh rate of the device.
+//      This is used to make sure we only force an update when the refresh rate changes
+//      from REFRESH_RATE_2 to REFRESH_RATE_1 (i.e. only as a result of the Fn+R key.).
+//      This is to make sure we don't force an extra update when a different kind of
+//      display change (not refresh change) is detected.
+int currentRefreshRate;
+
+
+/* ~~~ FUNCTIONS ~~~ */
 
 /* ~~ Keyboard Event (Hotkey Mode) Variables ~~ */
 const int REFRESH_CHANGE_HOTKEY = 1000;
@@ -148,7 +161,7 @@ int lenovoFnFixDisplayUpdate() {
         return -1;
     }
 
-    if (getDisplayConfigRefresh() == REFRESH_RATE_1) {
+    if (getDisplayConfigRefresh() == REFRESH_RATE_1 && currentRefreshRate == REFRESH_RATE_2) {
         setDisplayConfigRefresh(REFRESH_RATE_1);
     }
 
@@ -188,7 +201,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         case WM_DISPLAYCHANGE:
             if (mode == LENOVO_FN_REFRESH_FIX) {
                 lenovoFnFixDisplayUpdate();
-            }            
+            }
+            // Update Refresh Rate Tracking Variable
+            this_thread::sleep_for(chrono::milliseconds(50)); // Wait a short time to make sure the display refresh has updated.
+            getDisplayConfigs();
+            currentRefreshRate = getDisplayConfigRefresh();
             break;
         case WM_QUERYENDSESSION:
             return TRUE; // Agree to termination
@@ -209,14 +226,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 }
 
 // Initialize the Invisible Window
-int initWindow() {
+int initWindow(HINSTANCE hInstance) {
     // Register the window class.
     const wchar_t CLASS_NAME[]  = L"Auto Refresh Change Window Class";
     
     WNDCLASS wc = { };
 
     wc.lpfnWndProc   = WindowProc;
-    wc.hInstance     = GetModuleHandle(NULL);;
+    wc.hInstance     = hInstance;
     wc.lpszClassName = CLASS_NAME;
 
     RegisterClass(&wc);
@@ -230,7 +247,7 @@ int initWindow() {
         0, 0, 0, 0,                 // Size and position
         NULL,   // Parent window
         NULL,   // Menuk
-        NULL,   // Instance handle
+        hInstance,   // Instance handle
         NULL    // Additional application data
         );
 
@@ -246,25 +263,11 @@ int initWindow() {
     return 0;
 }
 
-int main() {
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
     LONG result = 0;
 
-    // TODO: This doesn't work...
-    //      Only option might be to change the program to be a window application instead of a console application.
-    // TODO: Change this application to be a window application!
-    
-    // Hide the Console Window Immediately
-    HWND hConsoleWnd = GetConsoleWindow();
-    ShowWindow(hConsoleWnd, SW_HIDE);
-
-    // Check if Console Window is Still Visible
-    if (IsWindowVisible(hConsoleWnd) != 0) {
-        cerr << "The Console Window is Still Visible... Aborting" << endl;
-        return -1;
-    }
-
     // Initialize the Invisible Window();
-    result = initWindow();
+    result = initWindow(hInstance);
 
     if (result != 0) {
         cerr << "Failed to Initialize Window" << endl;
@@ -292,18 +295,28 @@ int main() {
     result = getDisplayConfigs();
     if (result != ERROR_SUCCESS) {
         cerr << "Error Getting Display Configs: " << getDisplayConfigError(result) << endl;
-        return -1; 
+        return -1;
     }
-    selectDisplayPathIndex();
+    result = selectDisplayPathIndex();
+    if (result != 0) {
+        return -1;
+    }
+
+    // Initialize and Set Refresh Rate Tracking Variable
+    currentRefreshRate = getDisplayConfigRefresh();
 
     // Main Event Loop
     //  Handles Custom Hotkey Message
-    MSG msg;
-    while (GetMessage(&msg, NULL, 0, 0)) {
-        if (msg.message == WM_HOTKEY && msg.wParam == REFRESH_CHANGE_HOTKEY) {
+    MSG msg = { };
+    while (GetMessage(&msg, NULL, 0, 0) > 0) {
+        // Handle Hotkey Message
+        if (mode == CUSTOM_HOTKEY_MODE && msg.message == WM_HOTKEY && msg.wParam == REFRESH_CHANGE_HOTKEY) {
             customHotkeyFixDisplayUpdate();
         }
-       continue;
+
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+        continue;
     }
     
     return 0;
